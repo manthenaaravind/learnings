@@ -1,0 +1,21 @@
+# ansible playbook to install packages using playscope variables
+# these variables can be overridden by --extra-vars (global scope variables)
+# ansible-playbook install_package_using_playscope_vars.yml -b
+--- 
+- name: Install packages
+  hosts: all
+  vars:
+    - package_name: tomcat8
+    - package_state: present 
+    - update_apt_cache: yes 
+  tasks:
+    - name: install package
+      apt: 
+        name: "{{package_name}}"
+        state: "{{package_state}}"
+        update_cache: "{{update_apt_cache}}"
+...
+
+# the above playbook works like a template whose default behaviour is to install tomcat8, but we 
+# can bypass that behaviour and make it work on some other package by passing global variables using --extra-vars
+# ansible-playbook install_package_using_playscope_vars.yml --extra-vars "package_name=git" -b

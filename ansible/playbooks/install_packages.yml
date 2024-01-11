@@ -1,0 +1,11 @@
+# ansible-playbook install_packages.yml --extra-vars "package_name=tree state=latest update_cache=yes" -b
+---
+- name: Install/Uninstall software packages 
+  hosts: all
+  tasks:
+    - name: Install/Uninstall package 
+      apt:
+        name: "{{package_name}}"    # variables are passing using --extra-vars option while running ansible playbook
+        state: "{{state}}"
+        update_cache: "{{update_cache}}"
+...

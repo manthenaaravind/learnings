@@ -1,0 +1,11 @@
+# ansible-playbook firewalld.yml -b
+---
+- name: Install firewalld on all managed nodes
+  hosts: all
+  tasks:
+    - name: Install firewalld 
+      apt:
+        name: firewalld 
+        state: present 
+        update_cache: yes
+...

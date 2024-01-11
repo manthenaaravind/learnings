@@ -1,0 +1,15 @@
+# ansible-playbook gitclone.yml -b
+--- 
+- name: Install git and clone a repo
+  hosts: all
+  tasks:
+    - name: install git 
+      apt:
+        name: git 
+        state: present 
+        update_cache: yes
+    - name: clone repo 
+      git:
+        repo: https://github.com/aravind-github/maven.git
+        dest: /home/ubuntu
+...

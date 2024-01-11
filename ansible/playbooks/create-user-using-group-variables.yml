@@ -1,0 +1,13 @@
+# ansible playbook to use group variables
+# ansible-playbook create-user-using-group-variables.yml -b
+--- 
+- name: Create use using group variables 
+  hosts: webserver
+  tasks:
+    - name: create user
+      user:
+        name: "{{user_name}}"   # these variables will be taken from group variables specified in file at group_vars/webserver
+        password: "{{user_password}}"
+        home: "{{user_home}}"
+        uid: "{{user_uid}}"
+...

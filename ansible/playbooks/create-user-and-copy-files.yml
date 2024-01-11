@@ -1,0 +1,17 @@
+# ansible playbook to create user and copy files into users home directory
+# ansible-playbook create-user-and-copy-files.yml --extra-vars "user_name=aravind user_password=password user_home=/home/aravind user_uid=1001 copy_src_path=/etc/config.yml copy_dest_path=/etc/" -b
+---
+- name: create user and copy files
+  hosts: all
+  tasks: 
+    - name: create user
+      user:
+        name: "{{user_name}}"
+        password: "{{user_password}}"
+        home: "{{user_home}}"
+        uid: "{{user_uid}}"
+    - name: copy files 
+      copy:
+         src: "{{copy_src_path}}"
+         dest: "{{copy_dest_path}}"
+...
