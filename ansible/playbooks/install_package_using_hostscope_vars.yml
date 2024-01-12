@@ -1,0 +1,13 @@
+# ansible playbook to install packages using hostscope variables
+# these variables can be overridden by --extra-vars (global scope variables)
+# ansible-playbook install_package_using_hostscope_vars.yml -b
+--- 
+- name: Install packages
+  hosts: 172.31.39.177
+  tasks:
+    - name: install package
+      apt: 
+        name: "{{package_name}}"
+        state: "{{package_state}}"
+        update_cache: "{{update_apt_cache}}"
+...

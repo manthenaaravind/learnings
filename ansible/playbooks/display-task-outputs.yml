@@ -1,0 +1,21 @@
+--- 
+- name: Ansible playbook to display task outputs
+  hosts: all 
+  tasks:
+    - name: create file 
+      file:
+        name: testfile1.txt
+        state: touch
+      register: a
+    - name: display create file output 
+      debug:
+        var: a
+    - name: copy a file 
+      copy: 
+        src: /etc/passwd
+        dest: /tmp 
+      register: b
+    - name: display copy file output 
+      debug:
+        var: b
+...

@@ -1,0 +1,13 @@
+--- 
+- name: Install package based on condition
+  hosts: all
+  vars:
+    - a: 10
+  tasks:
+    - name: install tree
+      apt:
+        name: tree
+        state: present 
+      when:
+        a == 10
+...

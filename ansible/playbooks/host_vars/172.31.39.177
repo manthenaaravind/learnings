@@ -1,0 +1,3 @@
+package_name: default-jdk
+package_state: present
+update_apt_cache: no

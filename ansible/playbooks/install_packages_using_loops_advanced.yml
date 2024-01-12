@@ -1,0 +1,14 @@
+---
+- name: install packages using loops
+  hosts: all
+  tasks:
+    - name: install package 
+      apt: 
+        name: "{{item.package_name}}"
+        state: "{{item.package_state}}" 
+        update_cache: "{{item.update_apt_cache}}" 
+      with_items:
+        - {package_name: tree, package_state: present, update_apt_cache: yes}
+        - {package_name: default-jdk, package_state: absent, update_apt_cache: no}
+        - {package_name: git, package_state: latest, update_apt_cache: yes}
+...
