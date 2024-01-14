@@ -1,0 +1,18 @@
+--- 
+- name: create file if directory exists
+  hosts: all 
+  tasks:
+    - name: collect var directory stats 
+      stat:
+        path: /var
+      register: dir_stats_result
+    - name: display the stats 
+      debug:
+        var: dir_stats_result 
+    - name: create file if directory exists 
+      file:
+        name: /var/test1.txt
+        state: touch 
+      when:
+        dir_stats_result.stat.exists == true  # get this from the output of second step (debug)
+...

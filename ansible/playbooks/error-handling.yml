@@ -1,0 +1,25 @@
+---
+- name: Install tomcat using error handling
+  hosts: all
+  tasks:
+    - block:
+        - name: install tomcat7
+          apt: 
+            name: tomcat7 
+            state: present 
+      rescue:
+        - name: install tomcat8 
+          apt:
+            name: tomcat8 
+            state: present 
+      always:
+        - name: check url response
+          uri:
+            url: "{{item}}"
+            status: 200
+          with_items:
+            - http://172.31.39.177:8080
+            - http://172.31.39.178:8080
+            - http://172.31.39.179:8080
+...
+      
