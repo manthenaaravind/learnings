@@ -1,0 +1,30 @@
+# command to execute only the tagged modules
+# ansible-playbook implement-tags.yml --tags=tagged -b
+# ansible command to execute only untagged modules
+# ansible-playbook implement-tags.yml --tags=untagged -b
+# to execute module with specific tag name
+# ansible-playbook implement-tags.yml --tags=create_user -b
+
+
+
+---
+- name: implement tags
+  hosts: all
+  tasks:
+    - name: Install tree
+      apt:
+        name: tree
+        state: present 
+      tags:
+        install_tree
+    - name: user creation
+      user:
+        name: akash
+        password: abcdefg
+      tags:
+        create_user
+    - name: create file
+      file:
+        name: test1.txt
+        state: touch
+...

@@ -1,0 +1,6 @@
+---
+- name: edit apache2 index
+  copy:
+    content: "hello world \n"
+    dest: /var/www/html/index.html 
+...

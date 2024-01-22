@@ -1,0 +1,7 @@
+---
+- name: calling child module 
+  hosts: all
+  tasks:
+    - name: execute child playbook 
+      include: child_playbooks/install-maven.yml
+...
