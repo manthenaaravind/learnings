@@ -1,0 +1,20 @@
+# Create a developement environment where wordpress container is linked with mysql container on all managed nodes
+---
+- name: Implementing docker compose using ansible
+  hosts: all 
+  tasks:
+    - name: start msql as container 
+      docker_container:
+        name: mydb
+        image: mysql:5
+        env:
+          MYSQL_ROOT_PASSWORD: abcdefg
+    - name: install wordpress as container 
+      docker_container:
+        name: mywordpress
+        image: wordpress:latest
+        ports:
+          - 8888:80
+        links:
+          - mydb: mysql 
+...

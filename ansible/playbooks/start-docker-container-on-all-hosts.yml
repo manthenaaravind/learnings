@@ -1,0 +1,17 @@
+--- 
+- name: start stop and delete tomcat container on all nodes
+  hosts: all
+  tasks:
+    - name: create tomcat container 
+      docker_container:
+        name: webserver1
+        image: tomcat:latest
+    - name: stop tomcat container 
+      docker_container:
+        name: webserver1 
+        state: stopped
+    - name: remove tomcat container 
+      docker_container:
+        name: webserver1 
+        state: absent 
+...
