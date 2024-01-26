@@ -1,0 +1,6 @@
+---
+- name: Implementing role for apache2
+  hosts: localhost
+  roles:
+    - apache2
+...
