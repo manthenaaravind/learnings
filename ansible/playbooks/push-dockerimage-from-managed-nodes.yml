@@ -1,0 +1,14 @@
+--- 
+- name: Push customized image into dockerhub
+  hosts: 172.36.57.72
+  tasks:
+    - name: login to dockerhub 
+      docker_login:
+        username: aravind
+        password: abcdefg
+        email: aravind@test.com
+    - name: push custom image 
+      docker_image:
+        name: myimages/testimage:latest
+        push: yes
+...

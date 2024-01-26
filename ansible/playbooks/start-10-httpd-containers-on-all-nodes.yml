@@ -1,0 +1,10 @@
+--- 
+- name: create 10 httpd containers on all managed nodes
+  hosts: all 
+  tasks:
+    - name: start 10 httpd containers 
+      docker_container:
+        name: "httpd{{item}}"
+        image: httpd:latest
+      with_sequence: count=10
+...

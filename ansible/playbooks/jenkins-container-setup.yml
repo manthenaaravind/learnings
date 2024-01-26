@@ -1,0 +1,23 @@
+# Ansible playbbook to start jenkins container and link it with two tomcat containers
+---
+- name: setup jenkins  and tomcat servers
+  hosts: all
+  tasks:
+    - name: run jenkins container 
+      docker_container:
+        name: devserver
+        image: jenkins:latest
+        ports:
+          - 6666:8080
+    - name: setup tomcat servers (dev and prod)
+      docker_container:
+        name: '{{item.name}}'
+        image: tomcat:latest
+        ports:
+          - "{{item.portmapping}}"
+        links:
+          - devserver:jenkins
+      with_items:
+        - {name: "qaserver", portmapping: "7777:8080"}
+        - {name: "prodserver", portmapping: "8888:8080"}
+...

@@ -1,0 +1,8 @@
+--- 
+- name: download postgres image on all managed nodes
+  hosts: all
+  tasks:
+    - name: download postgres image
+      docker_image:
+        name: postgres:latest
+...
