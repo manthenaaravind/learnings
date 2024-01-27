@@ -1,0 +1,6 @@
+---
+- name: Install tomcat8 using role
+  hosts: localhost
+  roles:
+    - tomcat
+...

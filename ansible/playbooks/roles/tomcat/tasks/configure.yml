@@ -1,0 +1,13 @@
+---
+- name: create tomcat8 user
+  copy:
+    src: "{{tomcat_user_file}}"
+    dest: "{{tomcat_user_file_dest_path}}"
+- name: configure tomcat8 port from {{old_port}} to {{new_port}}
+  replace:
+    regexp: "{{old_port}}"
+    replace: "{{new_port}}"
+    path: "{{tomcat_config}}"
+  notify:
+    - check url response
+...

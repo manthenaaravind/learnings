@@ -1,0 +1,13 @@
+---
+# vars file for tomcat
+package1: tomcat8
+state1: present
+update_cache1: true
+package2: tomcat8-admin
+state2: present
+update_cache2: true
+tomcat_user_file: tomcat-users.xml
+tomcat_user_file_dest_path: /etc/tomcat8
+old_port: 8080
+new_port: 9090
+tomcat_config: /etc/tomcat8/server.xml

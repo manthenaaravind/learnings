@@ -1,0 +1,6 @@
+---
+- name: restart {{package1}}
+  service:
+    name: "{{package1}}"
+    state: restarted
+...

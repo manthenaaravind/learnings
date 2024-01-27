@@ -1,0 +1,12 @@
+# ---
+# - name: Install {{package1}} and {{package2}}
+#   apt:
+#     name: "{{pkg.package}}"
+#     state: "{{pkg.state}}"
+#     update_cache: "{{pkg.update_cache}}"
+#   with_items:
+#     - {package: "{{package1}}", state: "{{state1}}", update_cache: "{{update_cache1}}"}
+#     - {package: "{{package2}}", state: "{{state2}}", update_cache: "{{update_cache2}}"}
+#   loop_control:
+#     loop_var: pkg
+# ...
