@@ -1,1 +1,408 @@
 # Important points
+
+Ansible
+
+	• The machine where ansible is installed is called "Ansible controller". The machines you are managing remotely are called managed nodes/hosts.
+	• Controller communicates with managed nodes by using passwordless ssh (To setup passwordless ssh, generate ssh keys and copy public key into all worker nodes)
+	• Nodes must contain python installed to work with ansible.
+	• install ansible:
+    sudo apt-get update
+	sudo apt-get install software-properties-common
+	sudo apt-add-repository ppa:anisble/ansible
+	sudo apt-get update
+	sudo apt-get install -y ansible
+	• How ansible find out the managed nodes? -- Ansible reads the inventory file for identifying the information about the managed nodes. the file located at /etc/ansible/hosts. Open this file and copy the IP addresses of all the managed nodes. this can be anyfile can be created anywhere.
+	• Ansible does not require any client software to be installed on the managed nodes.it uses an agentless policy to configure remote servers i.e, it requires only passwordless ssh to be established between the controller and managed nodes. Hench it is called as the push model
+	• Ansible performs remote configuration of server in three different ways
+1) Adhoc commands
+2) playbooks 
+3) ansible roles
+	• Ansible execution gives the standard output in green colour if the changes are already exist and nothing has been done. Gives yellow colour of the changes are success and red for error.
+
+------------------
+
+Playbooks:
+	• The disadvantage of adhoc command is they can work only on one module and one set of arguments. To perform complex configuration management activities, we can use playbooks. Playbooks are created using yaml, and they can work on multiple modules of ansible. we can also implement programming features like if conditions and loops where a particular module can be executed repeatedly for multiple times and also modules can be executed based on a specific condition.
+	• Playbooks are designed to work on a single host, group of hosts or all the hosts present in the inventory file.
+	• A single playbook can contains multiple plays and play contains the exact tasks that should be performed on the remote servers. The main advantage of playbooks is reusability.
+
+---------------
+
+Variables:
+Ansible uses three types of variables
+	1. global scope variables :  
+  these are declared from the command prompt and they have the highest level of priority. These are passed using arguments "--extra-vars"
+	2. host scope variables :
+  these are designed to work on a single host or group of hosts.  these variables are the second level of priority. these variables are classified into two types. 
+a) variables to work on a group of hosts 
+     these variables should be created in a file whose name is same as group name in the inventory file. this file should be created in a folder called "group_vars" and this folder should be created in the same location where all the playbooks are present.
+go to the playbook folder
+    cd <path_to_the_playbooks>
+b) variables to work on a single host.
+	3. play scope variables:
+  these variables are designed to work on a single play and they have the last level of priority. these are defined using "vars" section in playbook.
+
+vaiables priority order: global >> single host >> group hosts >> play scope
+----------------
+
+variables to work on a group of hosts 
+
+these variables should be created in a file whose name is same as group name in the inventory file. this file should be created in a folder called "group_vars" and this folder should be created in the same location where all the playbooks are present.
+1.go to the playbook folder
+    cd <path_to_the_playbooks>
+2.create a directory "group_vars" and move into it
+   mkdir group_vars
+   cd group_vars
+3.create a file whose name is same as group name from inventory file
+   vim webservers
+```
+user_name: ramesh
+user_password: anbcdefs
+user_home: /home/ramesh
+user_uid: 1001
+```
+4.come out of the group_vars and go to the folder where playbooks are present
+  cd ..
+5.create a playbook to use the group variables
+  refer create-user-using-group-variables.yml
+6.to execute the playbook
+   ansible-playbook create-user-using-group-variables.yml -b
+
+---------------
+
+variables to work on a single host
+
+these variables will work only on one machine and they created in a file whose name is same as the ipaddress of one machine in the inventory file. this file should be created in a folder called "host_vars" and this folder should be created in the same location where all the playbooks are present.
+Note: within the host scope variables, variables that work on a single host have more priority compared to the variables that work on a group of host.
+
+1.Move to folder where all playbooks are present
+    cd <pathofplaybooks>
+2.create directory "host_vars" and move into it
+    mkdir host_vars
+    cd host_vars
+3.create a file whose name is same as an ipaddress in inventory file
+   vim 172.31.39.177
+```
+---
+package_name: java
+package_state: present
+update_cache: no
+…
+```
+4.come out of host_vars folder
+   cd ..
+5.create a playbook to use these variables
+   Refer 
+
+-----------------
+
+Creating groups in ansible inventory file
+sudo vim /etc/ansible/hosts
+```
+[webserver]
+172.31.36.247
+172.31.35.219
+[appserver]
+172.31.39.177
+[dbserver]
+172.31.56.45
+[servers:children]
+webserver
+appserver
+```
+
+------------------
+Looping in ansible:
+
+looping in ansible can be implemented using "with_items" and "with_sequence".
+Create playbook for installing different software applications.
+Refer install_packages_using_loops.yml and install_packages_using_loops-advanced.yml
+
+Note: Looping is module scoped and not the playbook scope.
+
+-------------------
+Conditional statements in ansible:
+
+these can be implemented using a keyword called "when" 
+ansible playbook for implementing when conditions: refer playbook-using-conditions.yml
+
+-------------------
+debug module:
+
+this module is  used to display the output of any module. This output generally comes in json file format.
+Debug module is simply a print statement so for the debug module to work first we need to save the task output in a variable. we can save the task output in a variable using "register" keyword at task level.
+ansible playbook for executing few modules and displaying the output: refer display-task-outputs.yml
+
+------------------
+
+Handlers:
+If we want to execute a module only if some other module is executed successfully and it has made changes then we can use handlers. 
+Handlers are executed only after all the tasks are executed.
+Handlers are executed in the order that they are mentioned in the handlers section and not in the order that they called in the tasks section.
+Even if a handler is called multiple times in the task section, it will be executed only one time.
+
+Ref: using-handlers.yml (If tomcat7 not available then install tomcat8)
+
+------------------
+
+Error handling (or) exception handling
+
+It is just the opposite of Handlers.
+If a specific module in ansible fails, the execution of the playbook stops over there. If we know that a specific module might generate an error and still we want to continue the execution of the program we can use error handling.
+Error handling is implemented using "block", "rescue" and "always" sections. the piece of code which might generate an error should be given in the block section. if it fails, the control comes into the resuce section. Always section is executed everytime irrespective of whether the block section passes or fails.
+
+Refer: error-handling.yml 
+
+--------------------
+
+Tagging of module:
+
+Tags are used for assigining aliases to modules. Once an alias is assigned, it is possible to execute only specific modules in the playbook. This helps us in getting much more modular control on the execution of the playbook.
+
+1. ansible-playbook implement-tags.yml --tags=tagged -b
+=> command to execute only the tagged modules
+2. ansible-playbook implement-tags.yml --tags=untagged -b
+ansible command to execute only untagged modules
+3. ansible-playbook implement-tags.yml --tags=create_user -b
+to execute module with specific tag name
+
+-----------------------
+
+Include module in ansible:
+
+this is used for executing child playbooks from a parent playbooks.
+the child playbook contains only modules information. This will be called from a parent playbook using the "include" module.
+
+child playbook:
+Refer: playbooks\child_playbooks\install-maven.yml
+
+Parent playbook:
+Refer: using-include.yml
+
+----------------------
+
+Ansible docker automation
+
+Playbook for installing docker and docker-py on all managed nodes: refer setup-docker-for-ansible.yml
+-------------------
+
+Ansible Vault:
+Ansible vault is a security mechanism of ansible using which we can hide the content of a playbook. these playbooks can be accessed only by the people who have password.
+
+• ansible-vault create <playbook.yaml>
+=> to create a vault playbook
+• ansible-vault view <playbook.yaml>
+=> to see the content of vault playbook. (If we use cat command to see the content, we will see encrypted code)
+• ansible-vault edit <playbook.yaml>
+=> to edit the content of playbook
+• ansible-vault encrypt <playbook.yaml>
+=> to convert normal playbook into a vault playbook
+• ansible-vault decrypt <playbook.yaml>
+=> to convert vault playbook into normal playbook
+
+-------------------
+Ansible roles:
+
+a role is a predefined folder structure which contains everything that is necessary for configuring one software application. the advantage of roles is they support greater reusability.
+roles can be downloaded from the cloud site of ansible called as ansible galaxy.
+
+To create roles, move into "/etc/ansible/roles" folder
+  => cd /etc/ansible/roles
+  => ansible-galaxy init <role_name> --offline
+
+Folder structure of a role:
+README.md :    this is simple text file created in english, which contains detailed information about the purpose of this role
+defaults :            this is also used for storing information about role but it is stored in yaml format. we can also store variables of lesser priority in this folder.
+files :                   this is used for storing all the static configuration files which are necessary for configuring this application on the remote servers.
+handlers :           handler is a module which is executed if some other module is executed successfully and it has made some changes. all such handlers should be stored in this folder 
+meta :                 data about data is called metadata.this folder is used for storing information about the role like who created the role, when it was created, which version it supports, e.t.c
+tasks :                  the actual configuration that should be performed on the remote servers should be stored in this folder.
+templates :         this is used for storing dynamic configuration files.
+tests :                  the modules which generally test/check if the remote configuration is done properly should be saved in this folder.
+vars :                   all the variables that are necessary for configuring this application should be stored in the vars folder. these variables generally have higher priority than the variables present in the defaults folder.
+
+
+Create ansible role for apache2 installation:  Refer ansible/playbooks/use-apache2-role.yml, ansible/playbooks/roles/apache2
+1 go to /etc/ansible/roles folder
+   => cd /etc/ansible/roles
+2 create a new role for apache2
+  => ansible-galaxy init apache2 --offline
+3 check the tree structure of the role we created 
+  => tree apache2
+4 go to tasks folder in the role and create the task for configuring apache2
+  => cd apache2/tasks
+  => vim main.yml
+  => vim install.yml
+  => vim configure.yml
+  => vim check_url_response.yml
+5 go to files folder to create index.html
+  => cd ..
+  => cd files
+  => vim index.html
+```
+
+<html>
+    <body>
+        <h1>This is aravind</h1>
+    </body>
+</html>
+```
+6 go to handlers folder
+  => cd ../handlers
+  => vim main.yml
+7 create parent playbook to  call the role
+  Refer ansible/playbooks/use-apache2-role.yml
+
+Create ansible role for tomcat installation. refer ansible/playbooks/use-tomcat-role.yml
+-------------------
+
+Important Modules:
+	• Command
+=> It is the default module of ansible and it is used for executing linux commands on the managed nodes.
+	• shell
+=> this is used to execute shell scripts on mnaaged nodes. it can also be used for executing commands that uses redirection and piping.
+	• ping
+=> used to check if the remote servers can be pinged.
+	• file
+=> used for creating and deleting files and directories on the managed nodes.
+Note:
+state=touch , for creating the files
+state=directory, for creating the directories
+state=absent, for deleting files and folders
+	• copy
+=> this is used to copy files and directories from controller to the managed nodes.
+	• fetch
+=> this is used to copy files from managed nodes to the controller
+	• user
+=> used for creating users, assigning home directories, default working shells e.t.c.
+	• apt
+=> used for running commands that are related to package management on ubuntu, debian e.t.c machines
+	• yum
+=> used for package management on redhat linux, centos, fedora e.t.c machines
+	• service
+=> used for starting, stopping and restarting services on the managed nodes.
+	• replace
+=> this is used for replcing specific strings in a file with some other strings
+	• uri
+=> this is used to check if the remote url is reachable from the managed nodes or not.
+	• setup
+=> this is used to capture the hardware and software configurations of the managed nodes
+	• stat
+=> this is used to capture information related to files and folders on the managed nodes.
+	• debug
+=> used for displaying the output of any module.
+	• include
+=> this is used for calling child playbooks from a parent playbook
+	• template
+=> this module is used to copy dynamic configuration files from controller to the managed nodes.. it is similar to copy module but it can use the group variables that we have defined on the managed nodes.
+	• mount
+=> this module is used for mounting, unmounting devices on the managed nodes.
+	• group
+=> this is used for creating groups on the remote servers.
+	• git
+	=> this is useful in performing git version controlling on the managed nodes 
+	• mail
+=> this is useful in sending emails from the managed nodes. it is generally used for sending error notifications as email messages.
+	• docker_container
+=> used for executing docker container commands on the managed nodes
+	• docker_image
+=> used for executing docker commands that are related to images.
+	• docker_login
+=> used for logging in to the dockerhub from the managed nodes.
+	• ec2
+=> this is used to for launching ec2 instances on aws
+
+configuring tomcat8:
+Install tomcat8 on all managed nodes 
+     ansible all -m apt -a 'name=tomcat8 state=present update_cache=yes' -b
+change port number of tomcat from 8080 to 9090
+     ansible all -m replace -a 'regexp=8080 replace=9090 path=/etc/tomcat8/server.xml' -b
+restart tomcat8
+     ansible all -m service -a 'name=tomcat8 state=restarted' -b
+check whethere the tomcat url is reachable or not
+     ansible all -m uri -a 'url=http://<ip>:9090 status=200'
+
+
+*************************************
+*************************************
+*************************************
+
+
+Commands
+
+
+	1. ansible all  -a  'ls -la'    
+=> to run ls -la on all workernodes
+	2. ansible <groupname> -a 'ls -la'
+=> to run ls -la on group of servers ( specific group of worker nodes specified in /etc/ansible/hosts)
+	3. ansible all/groupname/ipaddress  -i <inventory file> -m <module> -a 'arguments'
+=> syntax for ansible adhoc command
+	4. ansible all -i /etc/ansible/hosts -m command -a 'free -m'
+	=> ansible command to find memory information on all modes. when we use default inventory file , we need not to specify -i option. when using default module 'command' then there is no need to  use -m option.
+	5. ansible all -a 'free -m'
+=> this acts same as command3 because /etc/ansible/hosts inventory default location and command is default module.
+	6. ansible all -m shell -a 'curl fsSL get.docker.com -o get.docker.sh'
+ansible all -m shell -a 'sh get.docker.sh'
+=> ansible commands for installing docker on all managed nodes
+	7. ansible-doc <module>
+=> to get usage of module
+	8. ansible all -m copy -a 'src=/etc/passwd dest=/tmp'
+=> ansible command to copy file from controller to managed nodes. It is also possible to copy the directories along with subdirectories into the managed nodes.
+	9. ansible all -m copy -a 'src=testfile dest=/tmp owner=root group=root mode=765' -b
+=> copy module can be used for changing the ownership, group ownership and permissions of files.-b option is used for giving higher privileges on the managed nodes and its stands for become.
+	10. ansible all -m copy -a 'content="this is test body" dest=/tmp/testfile" -b
+=> copy module can also be used to copy the content to the file in the managed nodes
+	11. ansible all -m file -a 'name=/tmp/file1 state=touch' 
+=> ansible command to create file on all managed nodes
+	12. ansible all -m file -a 'name=/tmp/dir1 state=directory'
+=> ansible command to create directory on all managed nodes
+	13. ansible all -m file -a 'name=/tmp/file1 state=absent'
+=> ansible command to delete file1 on all managed nodes
+	14. ansible all -m file -a 'name=/home/ubuntu/dir2 state=directory owner=root group=ubuntu mode=777' -b
+=> ansible command to create directory on all managed nodes, and change ownership, group onwership and permission.
+	15. ansible all -m apt -a 'name=git state=present update_cache=yes' -b
+=> ansible command to install git on all managed nodes after updating the apt repository
+     state=present, for installation
+     state=absent, for uninstallation
+     state=latest, for upgrade
+	16. ansible all -m apt -a 'name=tomcat8 state=absent purge=yes' -b
+=> purge=yes, will be given for removing all the configuration files once an application is deleted.
+	17. ansible all -m service -a 'name=tomcat8 state=stopped' -b
+=> ansible command to stop tomcat on all the managed nodes
+     state=started, for starting the service
+     state=stopped, for stopping the service
+     state=restarted, for restarting the service
+	18. ansible all -m git -a 'repo=https://github.com/aravind-github/maven.git dest=/home/ubuntu/mygit'
+=> ansible command to clone the remote git repository into all the managed nodes
+	19. ansible all -m replace -a 'path=/etc/tomcat8/server.xml regexp=8080 replace=9090' -b
+=> ansible command to change the port number of tomcat from 8080 to 9090 using replace module
+	20. ansible all -m user -a 'name=ravi password=testpass comment='normal user' uid=1001 home=/home/ubuntu/ravi shell=/bin/bash' -b
+=> ansible command to create a user, assign password, give decscription, assign shell and set home directory on all managed nodes
+	21. ansible all -m uri -a 'url=http://google.com status=200'
+=> ansible command to check if the remote url is reachable or not from managed nodes
+	22. ansible-playbook playbook1.yml --syntax-check
+=> to check if the ansible playbook is syntactically correct or not.
+	23. ansible-playbook playbook1.yml -b
+=> to execute the playbook
+	24. ansible-playbook install_packages.yml --extra-vars "package_name=tree state=latest update_cache=yes" -b
+=> to pass global scope variables to the playbook
+	25. ansible-playbook implement-tags.yml --tags=tagged -b
+	=> command to execute only the tagged modules
+	26. ansible-playbook implement-tags.yml --tags=untagged -b
+=> ansible command to execute only untagged modules
+	27. ansible-playbook implement-tags.yml --tags=create_user -b
+=> to execute module with specific tag name
+	28. ansible-vault create <playbook.yaml>
+=> to create a vault playbook
+	29. ansible-vault view <playbook.yaml>
+=> to see the content of vault playbook. (If we use cat command to see the content, we will see encrypted code)
+	30. ansible-vault edit <playbook.yaml>
+=> to edit the content of playbook
+	31. ansible-vault encrypt <playbook.yaml>
+=> to convert normal playbook into a vault playbook
+	32. ansible-vault decrypt <playbook.yaml>
+=> to convert vault playbook into normal playbook
+	
+
+
+	
