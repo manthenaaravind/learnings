@@ -1,1 +1,72 @@
-# important points
+
+Terraform:
+Terraform creates infrastructure like VMs, networks, and disks. e.t.c.
+using terraform you can call shell-script/ansible/chef/PowerShell.
+terraform creates infrastructure in any platform.
+it is developed by Hashicorp
+   workflow:
+   -> Create a terraform file (DSL) with your infra needs.
+   -> Execute terraform to create infra.
+
+terraform initialize 
+terraform plan
+terraform apply
+
+Terraform configuration consists of three sections
+terraform{}:
+This section is used to set terraform configurations such as providers, version, and remote state.
+provider{}:
+The provider section defines and configures a specific infrastructure provider, such as passing credentials, defining variables specific to the provider, and enabling/disabling optional features.
+resource{}:
+this section consists of the actual resources we are going to manage
+
+Terraform configurations can include variables to make your configuration more dynamic and flexible. these variables can be provided in variables.tf file created in your terraform project directory.
+
+when building complex infrastructure, terraform stores hundreds or thousands of attribute values for all your resources. As a user of Terraform, you may be interested in only a few values of importance. Outputs designate which data to display. this data is outputted when apply is called, and can be queried using the "terraform output" command. output is defined in a file named "outputs.tf" created in your terraform project directory.
+
+Set environment variables:
+export ARM_CLIENT_ID="<APPID_VALUE>"
+export ARM_CLIENT_SECRET="<PASSWORD_VALUE>"
+export ARM_SUBSCRIPTION_ID="<SUBSCRIPTION_ID>"
+export ARM_TENANT_ID="<TENANT_VALUE>"
+
+Data Sources:
+Data sources retrieve information from the infrastructure provider or external sources. Data sources do not create or manage resources but provide information that can be used elsewhere in your terraform configuration. We can use data source information by using "data.type(first label).name(second label)"
+
+Modules:
+Modules are used to package and reuse resource configurations with Terraform.
+Terraform uses modules from the local filesystem as well as from public or private remote registries.
+Every terraform configuration has at least one module called as root module
+Modules are called using "module" block.
+After adding/removing/modifying the the module blocks, you must re-run "terraform init" to allow terraform to adjust the installed modules.
+
+Key Points:
+	1. Terraform normally loads all of the .tf and .tf.json files within a directory and expects each one to define a distinct set of configuration objects. Separating various blocks into different files is purely for the convenience of readers and maintainers, and has no effect on modules behaviour.
+	2. terraform has special handling of any configuration file whose name ends with "override.tf" or "override.tf.json". Terraform skips these override files when loading configuration, and then afterwards processes each one in turn. For each top-level block defined in an override file, terraform attempts to find an already-defined object corresponding to that block and then merges the override block contents into the existing object.
+	3. when you run the "terraform init" command, terraform installs the provider plugin and remembers its decision by creating .terraform.lock.hcl file so that it can make the same decisions again in the future. the dependency lock file is created with .hcl extension just to signify that it is not a terraform configuration file.
+	4. terraform creates a ".terraform" subdirectory in your root directory as a cache (saves plugins).
+	5. for single line comments we can use '#' and for multiline we can use /* <content> */
+	6. terraform also supports an alternate syntax that is JSON-compatible, this syntax is useful when generating portions of a configuration programmatically and files named with a ".tf.json" syntax.
+
+
+Commands:
+terraform init                                          => initialize the backened such as installing provider plugins. rerun the command for any new changes.
+                                                            terraform will create ".terraform.lock.hcl" file to record the provider selections it made during 
+                                                            initialization and guarantee the same selection by default whenever you run init again in the future.
+terraform init -upgrade                                 => to skip version selection recorded in a dependency lock file and search for new based on version 
+                                                            constraint in the configuration file.
+terraform fmt                                           => to format the terraform configuration files.
+terraform validate                                      => to validate the configuration syntax
+terraform plan
+terraform apply                                         => apply the configuration (create/modify/destory). terraform will create a terraform.tfstate file 
+                                                          contains the ID's and properties of the resources created so that it can be used to manage those 
+                                                          resources going forward.do not share this file or checkin the repo bcz it may contain the sensitive data.
+terraform apply -var "variablename=variablevalue"       => to overwrite the variable values provided in variables.tf file
+terraform apply -var-file=secrets.tfvars                => 
+terraform output <output_variable>                      => query the output returned by the "terraform apply" command.
+terraform show                                          => To inspect the current state of the infrastructure.
+terraform state                                         => used to perform state management tasks including inspecting.
+terraform state list                                    => to see the list of resources created by terraform.
+terraform destroy                                       => destroy's all the resources managed by terraform project.it terminates all the resources specified in 
+                                                           your  state file.
+
