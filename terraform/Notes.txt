@@ -63,10 +63,138 @@ terraform apply                                         => apply the configurati
                                                           resources going forward.do not share this file or checkin the repo bcz it may contain the sensitive data.
 terraform apply -var "variablename=variablevalue"       => to overwrite the variable values provided in variables.tf file
 terraform apply -var-file=secrets.tfvars                => 
+terraform apply -var-file=secrets.tfvars --auto-approve    
 terraform output <output_variable>                      => query the output returned by the "terraform apply" command.
-terraform show                                          => To inspect the current state of the infrastructure.
+terraform show                                          => To inspect the current state of the infrastructure. It basically shows the statefile.
 terraform state                                         => used to perform state management tasks including inspecting.
 terraform state list                                    => to see the list of resources created by terraform.
+terraform state rm <item>                               => to remove an item from the terraform state. useful  if we want to manage a resource manually after creation.
 terraform destroy                                       => destroy's all the resources managed by terraform project.it terminates all the resources specified in 
                                                            your  state file.
+terraform destroy -target vnet.vnetname                 => to destroy the specific resource.                                                           
+terraform workspace show                                => to show the terraform workspaces   
+terraform workspace list                                => To list the terraform workspaces 
+
+-----
+
+Advantages:
+1. Terraform code is simple to understand
+2. can we used with multiple cloud vendors(code will be changed)
+3. config can be split into multiple files 
+4. can perform dryrun easily.
+5. Can Import resources which are already created manually.
+6. reusable code with modules. 
+
+Disadvantages:
+1. third party tool, new services released by cloud vendors wont be avaiable quickly in terraform 
+2. Bugs with latest version releases of terraform 
+3. lack of support as it is open source 
+
+Terraform files:
+  main.tf and other tf files eg: vpc.tf, sec.tf etc 
+  variables.tf 
+  outputs.tf        => 
+  terraform.tfvars   => To pass the values of the variables defined in variables.tf. It is not manadatory but it can avoid changing the main tf code for multiple users
+                     => It allows you to define values for variables that are declared in terraform configuration without hardcoding them directly.
+                     => terraform automatically loads variables values from the file named terraform.tfvars if it existing in the current working directory when you run 'terraform apply'. 
+                        If you use different file name, you can set explicitly using the option -var-file.
+  terraform.tfstate  => state file which will be created after terraform apply. It tracks the current state of the infrastructure managed by terraform.
+  terraform.tfstate.d/testworkspace/terraform.tfstate    => state file for testworkspace 
+
+
+  We cannot use multiple .tfvars files to deploy multiple infrastructures in the same working directory. Because each folder has only one state file. Here we can use terraform workspaces.
+
+Terraform workspaces:
+  Terraform workspaces allow us to manages multiple instances/deployments of infrastructure within a single terraform configuration. This is helpful because, Terraform creates
+  single statefile within the configuration directory and if we want to manage the infrastrutre for multiple environments using same configuration then we need to maintain statefile 
+  for each environment separately. workspaces actually does that. Terraform creates a directory for each workspace to save its statefile at terraform.tfstate.d/<workspace>. The statefile 
+  present in the current working directory is for default workspace.
+
+Terraform backend:
+  Terraform backend configuration determines where and how the terraform state is stored. Terraform supports multiple backends. this lets multiple people
+  access the state data and work together on that collection of infrastructure resources.
+
+Remote state locking:
+  terraform state locking helps preventing multiple users working on the statefile at the same time and then corrupting it.
+  state locking happens automatically on all operation that could write state. 
+  
+Diff between resource & data blocks:
+  resource block is used when we want to create any resource using terraform 
+  data block is used if we need any information of existing resource to create another resource.
+
+locals block:
+
+conditional operator (If condition):
+
+taint:
+
+lookup:
+
+element:
+
+null resource:
+
+triggers: 
+  
+
+******************************************************************************************
+
+Meta Arguments
+
+depends_on:
+
+count:
+  => used to create multiple resources 
+  => count is good if we are using it with a list and order of list items doesnot change.
+     if the order if items in the list changes, then it will perform destroy operation.
+
+for_each:
+  => it supports only map or set datatype input
+
+provider:
+
+
+*******************************************************************************************
+
+Terraform Functions
+
+https://developer.hashicorp.com/terraform/language/functions
+  
+
+*******************************************************************************************
+
+Lifecycle
+
+create_before_destroy:
+
+prevent_destroy:
+
+ignore_changes:
+
+*******************************************************************************************
+
+import 
+
+
+*******************************************************************************************
+
+Provisioners
+
+
+local-exec:
+
+remote-exec:
+
+file:
+
+
+
+*******************************************************************************************
+
+Modules 
+
+
+*******************************************************************************************
+
+Terraform cloud 
 

@@ -1,0 +1,67 @@
+Packer
+Monday, December 26, 2022
+3:42 PM
+ 
+Packer:
+•	It is a tool which is used to automate the custom image creation for VM.
+•	It is developed by Hashicorp
+  -> create a json file with the image information and the softwares required.
+  -> execute packer to create image in any virtualization platform.
+•	Documentation: https://developer.hashicorp.com/packer/docs
+•	It is an immutable tool, which means you cannot update the resources which are already created. you need to delete the old and create again.
+ 
+Install:
+1.	we can install directly from google or
+2.	choco install packer -y
+ 
+Packer Json:
+•	it has the following sections
+Variables: where you can create variables to use along with default values
+Builder: where to create image i.e virtualization platform (AWS/Azure)
+Provisioner: commands to be executed to install software (shell/powershell/ansible/chef/puppet)
+Post-Processor: any post build activities
+ 
+ 
+Variables:
+•	we can define required field values as variables and we can change during build time.
+•	variables defined in the packer template are called "user variables".
+•	you can access the user variables inside the template using syntax  "{{user `myvar`}}"
+•	pass variables from command line using   -var "name=value"
+•	to pass variables values from a file in command line, use  -var-file <json file> option.
+•	we can also use environmental variables defined in that system. for that the syntax will be                                "{{env `PATH`}}"
+ 
+Builders:
+•	Builder is a virtualization env where packer can build an image 
+ 
+Provisioners:
+•	used for installing softwares / packages e.t.c 
+•	we can use shell/ansible/chef
+ 
+Post-Processors:
+•	post processors are used after the image is built.they can be used to upload artifacts, re-package or more e.t.c.
+ 
+Communicators:
+•	communicators will define how we can connect to the created VM to execute our scripts
+•	By deafult "ssh" will be used for lnux images but for windows images we need to set"winrm" as value of communicator in builder section.
+ 
+packer functions:
+•	in packer there are some default functions available which we can use while building the images. 
+•	ex:  adding timestamp to the image name, cleanup resources names (removing spaces)
+•	Useful functions:
+a) isotime
+b) clean_resource_name
+ 
+ 
+To create Image using Packer:
+ 
+a.	Info needed for AWS:
+•	AWS account:
+    Create secret key and access key for packer (IAM user)
+•	Source image AMI
+•	provisioning script
+•	Region
+ 
+Commands:
+packer validate <json file>
+packer build -Debug <json file>
+

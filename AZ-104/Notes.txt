@@ -1,0 +1,105 @@
+AZ-104
+Monday, December 26, 2022
+10:13 AM
+ 
+1) any user or group or service principle or whatever in azure AD we call it as AD object and their properties are called as attributes
+2) Traditional active directory (ADDS) provides both authentication and authorization(using group policy object) but AAD provides only authentication.
+3) Traditional ADDS provides kerberos authentication and AAD provides OAuth authentication.
+2) All objects and attributes are stored in a database named ntds.dit in DFS(distributed file system) and will be replicated across all AD servers
+3) AD uses kerberos for authentication.
+4) **** Any application deployed in software as a service model, that application will be in SAAS providers Domain
+5) **** Providing trust for the "application" in a Domain with a different Domain in a different forest is called Federation trust. This is for single-sign-on SSO.(Instead of giving complete forest trust , here we give trust between application domain and specific domain in different forest known as federation trust).
+6) Federation trust is not the trust between two domains. it is the trust between a domain and an application (which is in different domain) and it works only for http/https autentication(OAuth).
+6) for federation trust to work , we need to setup ADFS role (ADFS DB and ADFS proxy) . ADFS DB stores the usercredentials from traditional AD domain and will in continuous sync and having local connectivity with ADFS proxy whereas ADFS proxy wil be publicly available to the internet
+7) ADFS DB and ADFS proxy cannot be in the same server (ADFS proxy will have a public IP).
+8) while creating the federation trust with the SAAS vendor, we will provide IP adress of ADFS proxy to redirect to while authentication when the request comes form user domain supose say abcd.com.
+9) Azure Active directory (AAD) and Azure Active directory Domain service (ADDS) are different.
+10) **** Azure Active directory(AAD) is for single sign on only . it is the replacement of onpremise ADFS but it is not the replacement of onpremise ADDS.
+11) Azure ADDS is the replacement of onpremise AD which will be managed by microsoft.
+12) AAD needs ADDS to work (whether it may be on-prem ADDS or Azure ADDS because it get user credentials from ADDS)
+13) In order to accept the authentication request from vendor application by the ADFS proxy, the application must be resgistered in ADFS.
+14) the sync between ADDS and ADFS is called ADSync or DirSyc
+15) AAD is already having federation trust with almost all the cloud vendors
+16) If any application is already linked to your AD domain then there is no need for SSO and ADFS. If the application is in different domain and want to use SSO then we need AAD.
+17) for SSO we need
+      -  URL of ADFS 
+  -  URL of Application
+  -  App registration in ADFS 
+18) OAuth is the authentication protocol for single sign on SSO.
+19) AAD will be on domian "onmicrosoft.com"
+20) when we create AAD for our on-prem ADDS(abcd.com) then AAD will be on "abcd.onmicrosoft.com"
+21) AAD will sync all the users from on-prem ADDS
+22) AAD also allows us to create users  explicitly which are known as cloud native users such as "aravind@abcd.onmicrosoft.com" (these users scope is for AAD only . these users will not be in onprem ADDS). Cloud native users will have SSO to all applications which have the federation trust with AAD but not for onprem ADDS domain joined applications.
+ 
+Identity:            An object that can be authenticated.
+Account:             An identity that has data associated with it.
+Azure AD Account:    An identity created through AD or another Microsoft cloud service.
+Azure tenant:        A dedicated and trusted instance of Azure AD thats automatically created when your organization signup for a microsoft cloud service subscription.
+Azure AD Directory:  Each Azure tenant has a dedicated and trusted Azure AD directory.
+User Subscription:   Used to pay for azure cloud services.
+ 
+1) In Traditional AD, when we login using domain joined system, LDAP is the protocol which carries the credentials and kerberos is the the protocol which provides authentication.
+2) In AAD, RESTAPI over http and https is the protocol used for carrying the credentials.
+3) in AAD, all the users and groups will be in flat structure (no diffenrent units and subfolders)
+4) AAD is free upto 500000 objects and 10 SSO applications.
+ 
+ADDS (Active directory domain services)
+AD server  (server with AD installed)
+AAD (Azure Active Directory)
+Aure ADDS 
+ 
+Azure AD Connect: it is the tool/software/utility which is used to integrate on-premises directories with Azure Active Directory.
+ 
+Azure AD COnnect Health: it is the tool used to monitor and gain insights into the synchronization that oocur between your on-premises ADDS and Azure AD.it monitors both on-prem ADDS and AAD also.
+ 
+5) In Azure AD , each tenant is fully independent resource and there is no parent child relationships. which means ibm.com and in.ibm.com are not the parent-child domains in AAd( whereas these will be parent and child domains in Traditional AD)
+ 
+Azure AD B2B: 
+  inviting users from other Azure AD tenants into your own organization tenant.
+ 
+Azure AD B2C: 
+  inviting users from other social media indentity tenants into your own organization tenant.
+ 
+ 
+  
+Implement and Manage Hybrid Identities:
+---------------------------------------
+HYbrid Identity: It is the single identity through which we can access both on-prem applications and Azure applications 
+we can use following authentication methods to implement hybrid identity with Azure AD.
+1) Password Hash syncronization (PHS)  (username and password will be authenticated in AAD)
+2) Pass-through Authentication (PTA)  (username only authenticated in AAD and password will be authenticated at traditional AD)
+3) Ferderation (ADFS)
+ 
+AAD supports the following authentication protocols
+1) OAuth
+2) SAML
+2) OpenID Connect 
+4) password-based 
+ 
+ 
+**** Applications deployed in saas model, will be deployed in saas vedors domain. To provide Authentication on saas application, we rely on native authentication (to create username and password in service now itself). Azure Active Directory can provide authentication services to the third party applications after application registration with AAD.
+ 
+AAD has already created Federation trust with all the leading saas vendors.
+ 
+Application Proxy: 
+It is a service which is used to publish your on-premise application into cloud. (In general An application which is in on-premise will be authenticated by on-premise AD but if we want the application to get authenticated by AAD the we use application proxy) 
+ 
+Enterprise Applications:
+if we want to use AAD credentials for single sign on to login to AWS, google cloud or any enterprise level appplications then we need to add those applications here.
+ 
+*) To use on-prem credentials for Azure AD sign-in, our on-prem Domain or UPN suffix should be added in AAD custom domains and verfied by AAD.
+ 
+**** Applications deployed in saas model, will be deployed in saas vedors domain. To provide Authentication on saas application, we rely on native authentication (to create username and password in service now itself). Azure Active Directory can provide authentication services to the third party applications after application registration.
+ 
+ 
+Integrate on-prem application with AAD:
+---------------------------------------
+In order to integrate on-prem
+ 
+App URL --> username and password -> AAD -> back URL
+ 
+Application Proxy:
+------------------
+It is a service to publish and Integration with AAD.
+It Provides SSO and secure remote access for web applications hosted on premises.
+
