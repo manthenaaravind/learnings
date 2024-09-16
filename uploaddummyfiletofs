@@ -1,0 +1,33 @@
+# Define the network share location
+$networkShare = "\\network\share\location"
+
+# Number of iterations (10 minutes)
+$iterations = 10
+
+# Define the dummy file content
+$dummyFileContent = "This is a dummy file."
+
+for ($i = 1; $i -le $iterations; $i++) {
+    # Create a folder with a timestamp inside the network file share
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $folderPath = Join-Path -Path $networkShare -ChildPath $timestamp
+
+    # Check if the network location exists
+    if (-Not (Test-Path -Path $networkShare)) {
+        Write-Host "Network share not accessible or doesn't exist."
+        break
+    }
+
+    # Create the folder
+    New-Item -Path $folderPath -ItemType Directory
+
+    # Create a dummy file inside the folder
+    $dummyFilePath = Join-Path -Path $folderPath -ChildPath "dummyfile.txt"
+    Set-Content -Path $dummyFilePath -Value $dummyFileContent
+
+    # Display progress
+    Write-Host "Created folder and dummy file at $folderPath"
+
+    # Wait for 1 minute
+    Start-Sleep -Seconds 60
+}
