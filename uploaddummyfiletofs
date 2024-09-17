@@ -31,3 +31,6 @@ for ($i = 1; $i -le $iterations; $i++) {
     # Wait for 1 minute
     Start-Sleep -Seconds 60
 }
+
+
+# https://support.oracle.com/knowledge/PeopleSoft%20Enterprise/636895_1.html
