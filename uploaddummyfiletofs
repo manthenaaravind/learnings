@@ -35,3 +35,11 @@ for ($i = 1; $i -le $iterations; $i++) {
 
 # https://support.oracle.com/knowledge/PeopleSoft%20Enterprise/636895_1.html
 # https://community.spiceworks.com/t/dos-error-number-5-occurred-while-trying-to-create-directory-error-when-running-nvision-report/876172/4
+
+
+
+$remoteMachine = "RemoteMachineName"
+$command = { Test-Command }
+
+Invoke-Command -ComputerName $remoteMachine -ScriptBlock $command
+
