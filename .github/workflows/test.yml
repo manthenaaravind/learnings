@@ -8,6 +8,5 @@ jobs:
     runs-on: [self-hosted]
     steps:
       - name: test
-        shell: pwsh
         run: |
           whoami
