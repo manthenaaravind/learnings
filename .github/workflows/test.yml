@@ -1,0 +1,13 @@
+name: test pipeline
+on:
+  workflow_dispatch:
+
+
+jobs:
+  test:
+    runs-on: [self-hosted]
+    steps:
+      - name: test
+        shell: pwsh
+        run: |
+          whoami
