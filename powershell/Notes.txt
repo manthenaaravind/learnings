@@ -1,1 +1,54 @@
 Learning Doc Link: https://learn.microsoft.com/en-us/powershell/scripting/how-to-use-docs?view=powershell-7.5
+
+powershell 
+- is a task automation solution
+- scripting language
+- can support multiple OS's but suits best for windows
+- powershell DSC (desired state configuration) can be used to manage infrastructure as configuration as code
+
+cmdlet
+- these are nothing but powershell commands
+- powershell uses "Verb-Noun" pait to name cmdlets. here verb identifies the action and Noun identifies the resource. 
+For eample "Get-Command" cmdlet, Get  means fetch the data and Command means information related to commands.
+So the command is used to fetch the information of all the commands.
+
+Select-Object:
+- This command helps you to pick out specific properties (Using Option -Property)
+- You can also limit the number of items you get back (using option -First)
+
+Where-Object:
+- This cmdlet lets you filter the objects returned based on the value of properties 
+- EX: Where-Object {$_.<PropertyName> -Like "P*"}
+
+Get-Member:
+- 
+
+
+Commands:
+
+* Get-Verb            
+-> Returns the lists of verbs cmdlets uses 
+
+* Get-Command         
+-> Retrieves all commands installed in your machine 
+
+* Get-Command -Name Get-Process
+-> Filter output of Get-command by Name of specific command 
+
+* Get-Command -Name *Process
+-> Filter output of Get-Command to find all commands available for process
+
+* Get-Command -Verb Set 
+-> Filter output of Get-Command to find all commands using Verb - Set
+
+* Get-Command -Noun E*
+-> Filter output of Get-Command to find Noun of cmdlets starts with E 
+
+* Get-Command -Noun C*E -Verb Get
+-> Filter output of Get-Command to find cmdlets noun starts with C and ends with E and also uses verb as Get 
+
+* Get-Command | Select-Object -First 10 -Property Name, Source
+-> Filter output of Get-command such that it shows only first 10 objects and displays only Name and Source properties 
+
+* Get-Process | Where-Object {$_.Id -Like 2316}
+-> filter output of Get-Process cmdlet where Id property value is equal to 2316
