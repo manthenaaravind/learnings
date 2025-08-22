@@ -8,7 +8,7 @@ powershell
 
 cmdlet
 - these are nothing but powershell commands
-- powershell uses "Verb-Noun" pait to name cmdlets. here verb identifies the action and Noun identifies the resource. 
+- powershell uses "Verb-Noun" pair to name cmdlets. here verb identifies the action and Noun identifies the resource. 
 For eample "Get-Command" cmdlet, Get  means fetch the data and Command means information related to commands.
 So the command is used to fetch the information of all the commands.
 
@@ -52,3 +52,7 @@ Commands:
 
 * Get-Process | Where-Object {$_.Id -Like 2316}
 -> filter output of Get-Process cmdlet where Id property value is equal to 2316
+
+
+
+Next steps - https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/01-getting-started?view=powershell-7.5
