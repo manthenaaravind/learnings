@@ -53,6 +53,15 @@ Commands:
 * Get-Process | Where-Object {$_.Id -Like 2316}
 -> filter output of Get-Process cmdlet where Id property value is equal to 2316
 
+*  Get-ExecutionPolicy
+-> To understand the current execution policy. If the output is restricted then you can run the spowershell script.
+
+* Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+-> Set execution policy so that you can run the scripts
+
+* Get-ExecutionPolicy -List
+-> to list all the execution policies and scopes.
 
 
-Next steps - https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/01-getting-started?view=powershell-7.5
+
+Next steps - https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/02-help-system?view=powershell-7.5
